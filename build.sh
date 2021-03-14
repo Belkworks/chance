@@ -1,0 +1,1 @@
+moonc -o init.lua chance.moon
