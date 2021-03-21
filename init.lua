@@ -33,6 +33,29 @@ indexOf = function(Table, Value)
     end
   end
 end
+local Days = {
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday'
+}
+local Months = {
+  'January',
+  'Feburary',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+}
 local Chance
 do
   local _class_0
@@ -84,12 +107,14 @@ do
       local format = toCharArray(String)
       assert(format, 'invalid format string passed to Chance.format')
       local result = ''
+      local caps = toCharArray('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+      local letters = toCharArray('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
       for _index_0 = 1, #format do
         local char = format[_index_0]
         result = result .. (function()
           local _exp_0 = char
           if 'X' == _exp_0 then
-            return self:char('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+            return self:char(caps)
           elseif '*' == _exp_0 then
             return self:char()
           elseif 'N' == _exp_0 then
@@ -97,7 +122,7 @@ do
           elseif 'H' == _exp_0 then
             return string.format('%X', self:number(0, 15))
           elseif 'A' == _exp_0 then
-            return self:char('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
+            return self:char(letters)
           else
             return char
           end
@@ -106,31 +131,10 @@ do
       return result
     end,
     month = function(self)
-      return self:pickone({
-        'January',
-        'Feburary',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December'
-      })
+      return self:pickone(Months)
     end,
     day = function(self)
-      return self:pickone({
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday',
-        'Sunday'
-      })
+      return self:pickone(Days)
     end,
     ampm = function(self)
       return self:pickone({

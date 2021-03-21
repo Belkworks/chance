@@ -16,6 +16,13 @@ default = (Params, Key, Value) ->
 
 indexOf = (Table, Value) -> return I for I, V in pairs Table when V == Value
 
+Days = {'Monday', 'Tuesday', 'Wednesday', 'Thursday',
+	'Friday', 'Saturday', 'Sunday'}
+
+Months = {'January', 'Feburary', 'March', 'April',
+	'May', 'June', 'July', 'August',
+	'September', 'October', 'November', 'December'}
+
 class Chance
 	@uniqueMaxAttempts: 100
 	new: (Seed) => @reseed Seed
@@ -59,10 +66,12 @@ class Chance
 		format = toCharArray String
 		assert format, 'invalid format string passed to Chance.format'
 		result = ''
+		caps = toCharArray 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+		letters = toCharArray 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 		for char in *format
 			result ..=  switch char
 				when 'X' -- upper
-					@char 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+					@char caps
 				when '*' -- charset
 					@char!
 				when 'N' -- number
@@ -70,20 +79,13 @@ class Chance
 				when 'H' -- hex
 					string.format '%X', @number 0, 15
 				when 'A' -- upper and lower
-					@char 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+					@char letters
 				else char
 		result
 
 	-- Time
-	month: =>
-		@pickone {'January', 'Feburary', 'March', 'April',
-			'May', 'June', 'July', 'August',
-			'September', 'October', 'November', 'December'}
-
-	day: =>
-		@pickone {'Monday', 'Tuesday', 'Wednesday', 'Thursday',
-			'Friday', 'Saturday', 'Sunday'}
-
+	month: => @pickone Months
+	day: => @pickone Days
 	ampm: => @pickone {'am', 'pm'}
 	millisecond: => @number 0, 999
 	second: => @number 0, 59
