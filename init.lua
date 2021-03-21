@@ -297,7 +297,26 @@ do
         Seed = 0
       end
       assert('number' == type(Seed), 'invalid seed number passed to Chance.reseed')
-      self.source = Random.new(Seed)
+      if Random then
+        self.source = Random.new(Seed)
+      else
+        math.randomseed(Seed)
+        math.random()
+        self.source = {
+          NextInteger = function(self, min, max)
+            return math.floor(0.5 + self:NextNumber(min, max))
+          end,
+          NextNumber = function(self, min, max)
+            if min == nil then
+              min = 0
+            end
+            if max == nil then
+              max = 1
+            end
+            return min + math.random() * (max - min)
+          end
+        }
+      end
     end
   }
   _base_0.__index = _base_0

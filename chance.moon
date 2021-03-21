@@ -30,7 +30,7 @@ class Chance
 	bool: => 1 == @number 0, 1
 
 	-- Number
-	number: (A, B) => -- Lower (or table), Upper
+	number: (A, B) => -- int: Lower (or table), Upper
 		AN = tonumber A
 		BN = tonumber B
 
@@ -161,4 +161,14 @@ class Chance
 
 	reseed: (Seed = 0) =>
 		assert 'number' == type(Seed), 'invalid seed number passed to Chance.reseed'
-		@source = Random.new Seed
+		@source = if Random -- ROBLOX
+			Random.new Seed
+		else
+			math.randomseed Seed
+			math.random!
+			{
+				NextInteger: (min, max) =>
+					math.floor 0.5 + @NextNumber min, max
+				NextNumber: (min = 0, max = 1) =>
+					min + math.random()*(max-min)
+			}
