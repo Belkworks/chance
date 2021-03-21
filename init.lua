@@ -317,6 +317,35 @@ do
           end
         }
       end
+    end,
+    weighted = function(self, Choices, Weights)
+      assert('table' == type(Choices), 'invalid list passed to Chance.weighted')
+      assert('table' == type(Weights), 'invalid weights passed to Chance.weighted')
+      assert(#Choices == #Weights, 'weights and list must be same length!')
+      local sum = 0
+      for _index_0 = 1, #Weights do
+        local w = Weights[_index_0]
+        sum = sum + w
+      end
+      local num = sum * self.source:NextNumber()
+      local total = 0
+      local lastGoodIdx = -1
+      local chosenIdx = 0
+      for i, choice in pairs(Choices) do
+        local val = Weights[i]
+        total = total + val
+        if val > 0 then
+          if num <= total then
+            chosenIdx = i
+            break
+          end
+          lastGoodIdx = i
+        end
+        if i == #Weights then
+          chosenIdx = lastGoodIdx
+        end
+      end
+      return Choices[chosenIdx]
     end
   }
   _base_0.__index = _base_0

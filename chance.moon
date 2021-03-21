@@ -172,3 +172,29 @@ class Chance
 				NextNumber: (min = 0, max = 1) =>
 					min + math.random()*(max-min)
 			}
+
+	weighted: (Choices, Weights) =>
+		assert 'table' == type(Choices), 'invalid list passed to Chance.weighted'
+		assert 'table' == type(Weights), 'invalid weights passed to Chance.weighted'
+		assert #Choices == #Weights, 'weights and list must be same length!'
+		sum = 0
+		sum += w for w in *Weights
+		num = sum * @source\NextNumber!
+		total = 0
+		lastGoodIdx = -1
+        chosenIdx = 0
+		for i, choice in pairs Choices
+			val = Weights[i]
+			total += val
+			if val > 0
+				if num <= total
+					chosenIdx = i
+					break
+
+				lastGoodIdx = i
+
+			if i == #Weights
+				chosenIdx = lastGoodIdx
+
+		-- print chosenIdx
+		Choices[chosenIdx]
